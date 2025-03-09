@@ -1,3 +1,24 @@
+# CompressARC MPS Optimized Fork
+
+This is a fork of the CompressARC project from Carnegie Mellon's https://goombalab.github.io, optimized to run on Apple Silicon Macs using the Metal Performance Shaders (MPS) backend for PyTorch. This fork allows for significantly faster training and inference on Macs with Apple Silicon GPUs compared to CPU or even CUDA on external GPUs (in some cases).
+
+Everything works as normal. Running at around 4.5 sec/it on the M1 gpu.
+
+## What is MPS?
+
+MPS is a backend for PyTorch that leverages Apple's Metal framework to accelerate deep learning computations on Apple Silicon GPUs. It provides performance benefits similar to CUDA on NVIDIA GPUs but is specifically designed for Apple's hardware.
+
+## TODO
+- Evaluation script has an out of index error
+- GPU usage only around 70%
+- Number of iterations selection at startup
+
+### *Here is the original README from the CompressARC Project:*
+
+
+
+
+
 <a href="https://iliao2345.github.io/blog_posts/arc_agi_without_pretraining/arc_agi_without_pretraining.html"><img src="teaser_figure_w_title.png"></a>
 This is the code base for the [ARC-AGI Without Pretraining](https://iliao2345.github.io/blog_posts/arc_agi_without_pretraining/arc_agi_without_pretraining.html) project.
 
