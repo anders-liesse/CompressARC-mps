@@ -15,7 +15,7 @@ Plot all of the ARC-AGI problems in the split.
 
 
 if __name__ == "__main__":
-    task_nums = list(range(400))
+    task_nums = list(range(10)) # plotting all 400 problems is very slow. plotting first 10 is fast for testing.
     split = input('Enter which split you want to find the task in (training, evaluation, test): ')
     tasks = preprocessing.preprocess_tasks(split, task_nums)
     train_history_loggers = []

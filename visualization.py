@@ -11,7 +11,12 @@ This file trains a model for every ARC-AGI task in a split.
 
 np.random.seed(0)
 torch.manual_seed(0)
-
+if torch.backends.mps.is_available():
+    torch.set_default_device('mps')
+    device = torch.device('mps')
+else:
+    device = torch.device('cpu')
+    
 
 color_list = np.array([
     [0, 0, 0],  # black

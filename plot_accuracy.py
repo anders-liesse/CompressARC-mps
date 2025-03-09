@@ -167,7 +167,7 @@ def print_accuracy(pass_at_n):
     for iter_num in [100, 200, 300, 400, 500, 750, 1000, 1250, 1500, 2000]:
         for attempt_num in [1, 2, 5, 10, 100, 1000]:
             print('iteration ' + str(iter_num) + ', ' + str(attempt_num) + ' attempts: accuracy = ' + str(float(pass_at_n[iter_num-1, attempt_num-1])))
-
+# if torch.backends.mps.is_available():
 if __name__ == "__main__":
     task_nums = list(range(400))
     split = input('Enter which split you want to find the task in (training, evaluation, test): ')

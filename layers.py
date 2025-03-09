@@ -121,7 +121,7 @@ def channel_layer(target_capacity, posterior):
     normalized_mean = normalized_mean / torch.sqrt(torch.mean(normalized_mean**2+1e-8, dim=all_but_last_dim))
 
     # Now we can have a sample of z.
-    z = signal_std*normalized_mean + noise_std*torch.randn(normalized_mean.shape)
+    z = signal_std*normalized_mean + noise_std*torch.randn(normalized_mean.shape, device=mean.device)
     z = output_scaling*z  # leaks a tiny bit of unmeasured information, see comment above
 
     # Calculate the KL directly instead of using the AWGN channel capacity formula, because we didn't
@@ -557,6 +557,8 @@ def postprocess_mask(task, x_mask, y_mask):
         max_length = max(task.shapes[example_num][0][1], task.shapes[example_num][1][1])
         for in_out_mode in range(2):
             y_mask_modifier[example_num,max_length:,in_out_mode] = -1000
-    x_mask = x_mask+torch.from_numpy(x_mask_modifier).to(x_mask.device).to(x_mask.dtype)
-    y_mask = y_mask+torch.from_numpy(y_mask_modifier).to(y_mask.device).to(y_mask.dtype)
+    x_mask_modifier_tensor = torch.from_numpy(x_mask_modifier).float().to(x_mask.device)  # Add .float() here
+    y_mask_modifier_tensor = torch.from_numpy(y_mask_modifier).float().to(y_mask.device)  # Add .float() here
+    x_mask = x_mask + x_mask_modifier_tensor
+    y_mask = y_mask + y_mask_modifier_tensor
     return x_mask, y_mask

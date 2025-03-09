@@ -4,7 +4,12 @@ import torch
 
 np.random.seed(0)
 torch.manual_seed(0)
-
+if torch.backends.mps.is_available():
+    torch.set_default_device('mps')
+    device = torch.device('mps')
+else:
+    device = torch.device('cpu')
+    
 
 NUM_DIMENSIONS = 5  # We have 5 dimensions: examples, colors, directions, x, y
 

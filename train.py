@@ -18,6 +18,11 @@ This file trains a model for every ARC-AGI task in a split.
 
 np.random.seed(0)
 torch.manual_seed(0)
+if torch.backends.mps.is_available():
+    torch.set_default_device('mps')
+    device = torch.device('mps')
+else:
+    device = torch.device('cpu')
 
 
 def mask_select_logprobs(mask, length):
@@ -132,7 +137,7 @@ if __name__ == "__main__":
     optimizers = []
     train_history_loggers = []
     for task in tasks:
-        model = arc_compressor.ARCCompressor(task)
+        model = arc_compressor.ARCCompressor(task).to(device)
         models.append(model)
         optimizer = torch.optim.Adam(model.weights_list, lr=0.01, betas=(0.5, 0.9))
         optimizers.append(optimizer)

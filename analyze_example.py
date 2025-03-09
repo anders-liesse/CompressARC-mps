@@ -33,7 +33,12 @@ the task code, and it will:
 np.random.seed(0)
 torch.manual_seed(0)
 torch.set_default_dtype(torch.float32)
-torch.set_default_device('cuda')
+
+if torch.backends.mps.is_available():
+    torch.set_default_device('mps')
+    device = torch.device('mps')
+else:
+    device = torch.device('cpu')
 
 if __name__ == "__main__":
 
@@ -54,7 +59,7 @@ if __name__ == "__main__":
     visualization.plot_problem(train_history_logger)
 
     # Perform training for 1500 iterations
-    n_iterations = 1500
+    n_iterations = 415 # 1500
     for train_step in tqdm(range(n_iterations)):
         train.take_step(task, model, optimizer, train_step, train_history_logger)
         

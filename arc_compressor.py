@@ -8,7 +8,12 @@ import layers
 np.random.seed(0)
 torch.manual_seed(0)
 torch.set_default_dtype(torch.float32)
-torch.set_default_device('cuda')
+
+if torch.backends.mps.is_available():
+    torch.set_default_device('mps')
+    device = torch.device('mps')
+else:
+    device = torch.device('cpu')
 
 
 class ARCCompressor:
@@ -43,7 +48,7 @@ class ARCCompressor:
         self.multitensor_system = task.multitensor_system
 
         # Initialize weights
-        initializer = initializers.Initializer(self.multitensor_system, self.channel_dim_fn)
+        initializer = initializers.Initializer(self.multitensor_system, self.channel_dim_fn, device)
 
         self.multiposteriors = initializer.initialize_multiposterior(self.decoding_dim)
         self.decode_weights = initializer.initialize_multilinear([self.decoding_dim, self.channel_dim_fn])

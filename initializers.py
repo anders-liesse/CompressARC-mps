@@ -8,7 +8,7 @@ torch.manual_seed(0)
 
 
 class Initializer:
-    def __init__(self, multitensor_system, channel_dim_fn):
+    def __init__(self, multitensor_system, channel_dim_fn, device):
         """
         Initializes weight tensors for a multitensor system.
         Args:
@@ -18,6 +18,7 @@ class Initializer:
                     returns an int representing the channel dimension size.
         """
         self.multitensor_system = multitensor_system
+        self.device = device
         self.channel_dim_fn = channel_dim_fn
         self.weights_list = []
 
@@ -25,7 +26,7 @@ class Initializer:
         """Initializes a weight tensor with zeros."""
         if callable(shape):
             shape = shape(dims)
-        zeros = torch.zeros(shape, requires_grad=True)
+        zeros = torch.zeros(shape, requires_grad=True, device=self.device)
         self.weights_list.append(zeros)
         return zeros
 
@@ -41,8 +42,8 @@ class Initializer:
             n_out = n_out(dims)
 
         scale = 1 / np.sqrt(n_in)
-        weight = scale * torch.randn(n_in, n_out)
-        bias = scale * torch.randn(n_out)
+        weight = scale * torch.randn(n_in, n_out, device=self.device)
+        bias = scale * torch.randn(n_out, device=self.device)
         weight.requires_grad = True
         bias.requires_grad = True
 
@@ -61,7 +62,7 @@ class Initializer:
             channel_dim = channel_dim(dims)
 
         shape = self.multitensor_system.shape(dims, channel_dim)
-        mean = 0.01 * torch.randn(shape)
+        mean = 0.01 * torch.randn(shape, device=self.device)
         mean.requires_grad=True
         local_capacity_adjustment = self.initialize_zeros(dims, shape)
 

@@ -5,7 +5,12 @@ import multitensor_systems
 
 np.random.seed(0)
 torch.manual_seed(0)
-
+if torch.backends.mps.is_available():
+    torch.set_default_device('mps')
+    device = torch.device('mps')
+else:
+    device = torch.device('cpu')
+    
 class Task:
     """
     A class that helps deal with task-specific operations such as preprocessing,
@@ -110,7 +115,7 @@ class Task:
                     mode_num = 0 if mode == 'input' else 1
                     self.problem[new_example_num, :, :grid.shape[1], :grid.shape[2], mode_num] = grid
 
-        self.problem = torch.from_numpy(np.argmax(self.problem, axis=1)).to(torch.get_default_device())
+        self.problem = torch.from_numpy(np.argmax(self.problem, axis=1)).to(device)
 
     def _create_grid_tensor(self, grid):
         return np.array([
@@ -136,7 +141,7 @@ class Task:
             solution_tensor[example_num, :, :min_x, :min_y] = grid_tensor[:, :min_x, :min_y]
 
         self.solution_hash = hash(solution_tuple)
-        return torch.from_numpy(np.argmax(solution_tensor, axis=1)).to(torch.get_default_device())
+        return torch.from_numpy(np.argmax(solution_tensor, axis=1)).to(device)
 
     def _compute_mask(self):
         """
@@ -151,7 +156,7 @@ class Task:
                     y_mask = np.arange(self.n_y) < shape[1]
                     self.masks[example_num, :, :, mode_num] = np.outer(x_mask, y_mask)
 
-        self.masks = torch.from_numpy(self.masks).to(torch.get_default_dtype()).to(torch.get_default_device())
+        self.masks = torch.from_numpy(self.masks).to(torch.get_default_dtype()).to(device)
 
 
 def preprocess_tasks(split, task_nums_or_task_names):
